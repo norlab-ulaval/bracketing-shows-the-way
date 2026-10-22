@@ -128,8 +128,10 @@ ros2 launch basler_camera basler_camera.launch.py
 
 ```bash
 docker compose build driver
-docker compose run --rm driver                    # live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
+docker compose run --rm driver
 ```
+
+Live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
 
 **Launch options** (e.g. `ros2 launch basler_camera basler_camera.launch.py packet_size:=1500`):
 

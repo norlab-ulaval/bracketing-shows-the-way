@@ -81,7 +81,7 @@ The sample (1.3 GB, [v1.0 release](https://github.com/norlab-ulaval/bracketing-s
 ./scripts/run_demo.sh --native          # native
 ```
 
-A live [Rerun](https://rerun.io) view shows the images, the trajectory and the map. Natively it opens a window; with Docker, open http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy. Set `BVSLAM_VIZ=none` to disable it. The trajectories are written to `output/` in TUM format; `<sequence>_global_ba.tum` is the final one.
+A live [Rerun](https://rerun.io) view shows the images, the trajectory and the map. Natively it opens a window; with Docker, open http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy while the demo is running. Set `BVSLAM_VIZ=none` to disable it. The trajectories are written to `output/` in TUM format; `<sequence>_global_ba.tum` is the final one.
 
 ## Single-exposure example: FoMo
 
@@ -131,7 +131,7 @@ docker compose build driver
 docker compose run --rm driver
 ```
 
-Live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
+While the driver is running, open the live view at http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy (the link only works on the computer running it).
 
 **Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`:
 

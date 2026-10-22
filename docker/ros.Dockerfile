@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # ROS 2 Jazzy image for the basler_camera driver (driver/ + driver_ros/).
 #
 # The Basler pylon SDK cannot be redistributed (Basler EULA). Download pylon
@@ -28,8 +29,10 @@ WORKDIR /ws
 
 # ── pylon SDK from the user-supplied package (docker/pylon*) ────────────
 FROM deps AS pylon
-COPY docker/pylon* /tmp/pylon_pkg/
-RUN set -eux; \
+# The package is bind-mounted for this step only, so it is not stored in the image.
+RUN --mount=type=bind,source=docker,target=/tmp/docker_dir \
+    set -eux; \
+    mkdir /tmp/pylon_pkg; cp -a /tmp/docker_dir/pylon* /tmp/pylon_pkg/; \
     cd /tmp/pylon_pkg; \
     for f in *.tar.gz *.tgz; do if [ -f "$f" ]; then tar -xzf "$f"; rm "$f"; fi; done; \
     debs="$(find . -name 'pylon*.deb')"; \

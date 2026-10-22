@@ -84,7 +84,9 @@ A different library location can be given with `--cmake-args -DBASLER_DRIVER_DIR
 pylon SDK may not be redistributed: download pylon 12.x for Ubuntu 24.04
 (x86_64 or arm64; `.deb`, Debian package archive or setup tarball) from
 baslerweb.com and put it, unrenamed (the name must start with `pylon`), in
-`docker/`. Then build from the repository root:
+`docker/`. If pylon is already installed on the host, pack it instead with
+`tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`. Then build from the
+repository root:
 
 ```bash
 docker build -f docker/ros.Dockerfile -t bracketing-driver .

@@ -156,7 +156,11 @@ ros2 launch basler_camera basler_camera.launch.py
 ```
 
 **Docker (any Linux with Docker).**
-1. Download Pylon 12 for Linux (Debian package or setup tarball, x86_64 or aarch64) and put the file, unrenamed, in `docker/`.
+1. Put Pylon in `docker/`, in one of two ways:
+   - download Pylon 12 for Linux (Debian package or setup tarball, x86_64 or aarch64) and put the file, unrenamed, in `docker/`;
+   - or, if Pylon is already installed on the computer, pack it: `tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`
+
+   `docker/.gitignore` keeps these files out of git.
 2. Build the image. This takes a few minutes the first time.
    ```bash
    docker compose build driver

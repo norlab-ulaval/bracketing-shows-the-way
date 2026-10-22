@@ -5,7 +5,10 @@
 # 12.x for Linux (Ubuntu 24.04, x86_64 or aarch64: the Debian package, the
 # Debian package archive, or the setup tarball) from
 # https://www.baslerweb.com/en/downloads/software/ and put it in docker/
-# without renaming it (the file name must start with "pylon"). Then build
+# without renaming it (the file name must start with "pylon"). If pylon is
+# already installed on the host, pack it instead:
+#   tar -C /opt/pylon -czf docker/pylon-local.tar.gz .
+# Then build
 # from the repository root:
 #
 #   docker build -f docker/ros.Dockerfile -t bracketing-driver .

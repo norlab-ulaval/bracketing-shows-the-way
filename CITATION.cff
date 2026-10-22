@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the paper below."
+title: "Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM"
+repository-code: "https://github.com/norlab-ulaval/bracketing-shows-the-way"
+license: MIT
+authors:
+  - {family-names: Gamache, given-names: Olivier, affiliation: "Northern Robotics Laboratory, Université Laval"}
+  - {family-names: Lavertu, given-names: Anthony, affiliation: "Northern Robotics Laboratory, Université Laval"}
+  - {family-names: Duclos, given-names: David-Alexandre, affiliation: "Northern Robotics Laboratory, Université Laval"}
+  - {family-names: Fortin, given-names: Jean-Michel, affiliation: "Northern Robotics Laboratory, Université Laval"}
+  - {family-names: Pomerleau, given-names: François, affiliation: "Northern Robotics Laboratory, Université Laval"}
+  - {family-names: Giguère, given-names: Philippe, affiliation: "Northern Robotics Laboratory, Université Laval"}
+preferred-citation:
+  type: article
+  title: "Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM"
+  journal: "arXiv preprint"
+  year: 2026
+  authors:
+    - {family-names: Gamache, given-names: Olivier}
+    - {family-names: Lavertu, given-names: Anthony}
+    - {family-names: Duclos, given-names: David-Alexandre}
+    - {family-names: Fortin, given-names: Jean-Michel}
+    - {family-names: Pomerleau, given-names: François}
+    - {family-names: Giguère, given-names: Philippe}

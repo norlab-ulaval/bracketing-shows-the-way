@@ -1,0 +1,6 @@
+# Build context is the repository root; send only what the image needs.
+*
+!driver
+!driver_ros
+!docker/pylon*
+**/build

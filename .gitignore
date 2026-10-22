@@ -1,0 +1,12 @@
+# Build
+build/
+install/
+log/
+# Python
+__pycache__/
+*.egg-info/
+.venv/
+# Data and outputs
+data/
+output/
+*.tar.zst

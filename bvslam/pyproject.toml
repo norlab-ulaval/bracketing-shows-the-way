@@ -1,0 +1,36 @@
+[project]
+name = "bvslam"
+version = "1.0.0"
+description = "BVSLAM: stereo visual SLAM on adaptive multi-exposure (bracketed) image sequences (Bracketing Shows the Way, ICRA 2027)"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Olivier Gamache", email = "olivier.gamache@norlab.ulaval.ca" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "gtsam>=4.2.2",
+    "kornia>=0.8.3",
+    "lightglue",
+    "numpy>=1.26.4",
+    "opencv-python>=4.11.0.86",
+    "pyarrow<22",
+    "pyyaml>=6.0.3",
+    "rerun-sdk>=0.23.1",
+    "torch>=2.13.0",
+]
+
+[tool.uv.sources]
+lightglue = { git = "https://github.com/cvg/LightGlue.git", rev = "eb42fee2d71449efb0aa5c10549752b5d75384d8" }
+
+[project.scripts]
+bvslam-run = "bvslam.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.11,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]

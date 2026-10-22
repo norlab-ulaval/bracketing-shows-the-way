@@ -1,0 +1,22 @@
+services:
+  bvslam:
+    build: {context: ., dockerfile: docker/bvslam.Dockerfile}
+    image: bracketing-shows-the-way/bvslam
+    volumes: [./data:/data, ./output:/output]
+    ports: ["9090:9090", "9876:9876"]   # Rerun web viewer and its data stream
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: all, capabilities: [gpu]}]
+
+  bvslam-cpu:
+    image: bracketing-shows-the-way/bvslam
+    build: {context: ., dockerfile: docker/bvslam.Dockerfile}
+    volumes: [./data:/data, ./output:/output]
+    ports: ["9090:9090", "9876:9876"]
+
+  driver:
+    build: {context: ., dockerfile: docker/ros.Dockerfile}
+    image: bracketing-shows-the-way/driver
+    network_mode: host   # GigE Vision cameras must be reachable from the container
+    volumes: [./output:/output]

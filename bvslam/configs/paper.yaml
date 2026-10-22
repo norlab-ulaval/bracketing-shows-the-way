@@ -1,0 +1,46 @@
+# BVSLAM configuration used for the paper results.
+# Every value here equals the default in src/bvslam/config.py.
+
+dataset:
+  bayer_pattern: RGGB            # raw images are demosaiced straight to grayscale
+
+preprocessing:
+  # Drop frames whose mean left-image intensity is outside [1, 245]
+  # (fully black or saturated frames carry no features).
+  drop_low_info_frames: true
+  drop_low_info_min_brightness: 1.0
+  drop_low_info_max_brightness: 245.0
+
+superpoint:
+  device: cuda                   # falls back to CPU when CUDA is unavailable
+  max_keypoints: 1000            # keypoints kept per image (highest SuperPoint scores)
+
+tracking:
+  grid_rows: 1                   # keypoint bucketing grid; 1x1 = global top-k by score
+  grid_cols: 1
+  block_lae_sae_matches: true    # no direct LAE<->SAE temporal matching (linked through MAE)
+
+lightglue:
+  device: cuda
+  min_confidence: 0.9            # tau: LightGlue match-score threshold
+
+stereo:
+  min_disparity_px: 1.0          # reject stereo matches with disparity <= 1 px
+  max_depth_m: 60.0              # reject triangulated points beyond 60 m
+  pixel_sigma: 1.0               # px, reprojection noise of GenericStereoFactor3D
+  huber_k: 1.345                 # Huber robust-kernel threshold
+  landmark_prior_sigma: 3.0      # m, prior on each new landmark at its initial triangulation
+  depth_scaled_noise: true       # sigma = pixel_sigma * max(1, depth / 10 m)
+  depth_scaled_noise_reference_m: 10.0
+
+motion_prior:
+  # Identity BetweenFactorPose3 between consecutive frames (very loose).
+  rotation_sigma: 3.14159        # rad
+  translation_sigma: 10.0        # m
+  initial_pose_prior_sigma: 1.0e-3
+  velocity_prior_sigma: 1.0      # prior on the per-frame (inert) velocity variable
+
+graph:
+  vo_lookback: 4                 # window W = 4 previous frames + the current frame
+  smoother_lag_s: 5.0            # IncrementalFixedLagSmoother lag
+  global_bundle_adjust: true     # batch LM over all factors -> <out>_global_ba.tum

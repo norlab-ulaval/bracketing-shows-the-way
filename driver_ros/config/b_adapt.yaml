@@ -1,0 +1,95 @@
+# B-Adapt: adaptive 3-exposure bracketing.
+# Values are those of the recording rig. See README.md for the mapping
+# between parameters and the paper's symbols (Table I).
+basler_camera:
+  ros__parameters:
+
+    # ── Cameras: camera_1 = left (trigger master), camera_2 = right ────────
+    # Empty = auto-detect: one visible camera = mono (camera_1 only), two =
+    # stereo with the lowest serial as camera_1 (left). Set both (here or with
+    # the launch args camera_1_serial:=... camera_2_serial:=...) to choose or
+    # swap them; set only camera_1_serial for mono.
+    camera_1_serial: ""
+    camera_2_serial: ""
+
+    # Host-side trigger rate (Hz). 20 Hz nominal; the tunnel sequences were
+    # recorded at 4.0.
+    acquisition_frame_rate: 20.0
+
+    # ── Exposure policy ────────────────────────────────────────────────────
+    ae_zone_count: 3                  # n = 3: low, mid (derived bridge), high
+    zone_sort_stride: 1               # measure every 2x2 Bayer block
+
+    # Low (zone 0): its own frame's 99th percentile -> 250 (alpha = 1 %, 255 - beta).
+    # High (zone 2): its own frame's 1st percentile -> 5   (alpha = 1 %, beta = 5).
+    ae_bridge_low_percentile: 99.0
+    ae_bridge_low_target: 250.0
+    ae_bridge_high_percentile: 1.0
+    ae_bridge_high_target: 5.0
+    ae_bridge_min_stops_gap: 1.0      # Delta_min = 1 stop between low and high
+
+    # EMA rate per zone (lambda): low, mid (unused, mid is derived), high.
+    ae_zone_alpha: [0.8, 0.4, 0.8]
+
+    # ── Controller (shared) ────────────────────────────────────────────────
+    pixel_max: 255.0                  # BayerRG8
+    epsilon: 0.02                     # convergence: last 3 readings within 2% of target
+    default_exposure_us: 10000.0      # before the AE-Once seed
+    ae_saturation_boost_fraction: 0.5 # a clipped reading counts as 255 * 1.5
+    exposure_tie_tolerance_us: 5.0    # closestZone() tie tolerance
+
+    # ── Exposure / gain limits (a2A1920-51gcPRO) ───────────────────────────
+    min_exposure_us: 19.0
+    max_exposure_us: 5000.0
+    min_gain_db: 0.0
+    max_gain_db: 48.0
+
+    # ── GigE transport ─────────────────────────────────────────────────────
+    camera_1_heartbeat_timeout_ms: 10000
+    camera_2_heartbeat_timeout_ms: 10000
+    # GigE packet size. 8192 needs jumbo frames: `sudo ip link set <iface> mtu 9000`
+    # on the camera network interface. On a standard interface (MTU 1500), use 1500
+    # (launch argument packet_size:=1500), otherwise every grab fails with
+    # "The buffer was incompletely grabbed".
+    camera_1_packet_size_bytes: 8192
+    camera_2_packet_size_bytes: 8192
+    camera_1_inter_packet_delay_ticks: 0
+    camera_2_inter_packet_delay_ticks: 0
+    camera_1_bandwidth_reserve_mode: ""  # "" = camera default
+    camera_2_bandwidth_reserve_mode: ""
+    camera_1_num_grab_buffers: 10
+    camera_2_num_grab_buffers: 10
+    camera_1_frame_retention_ms: 1000
+    camera_2_frame_retention_ms: 1000
+
+    # ── AE-Once bootstrap (seeds every zone's exposure) ────────────────────
+    ae_once_max_iters: 100
+    ae_once_timeout_ms: 5000
+    ae_once_poll_ms: 5
+
+    # ── Grab timeouts (ms) ─────────────────────────────────────────────────
+    grab_timeout_ms: 10000
+    camera_2_grab_timeout_ms: 10000   # a timeout here usually means the trigger cable
+
+    # ── Stereo hardware trigger ────────────────────────────────────────────
+    # camera_1 (left) is software-triggered; its ExposureActive signal on
+    # Line3 is wired to camera_2's (right) Line3 trigger input.
+    trigger_output_line: "Line3"
+    trigger_output_source: "ExposureActive"
+    trigger_input_line: "Line3"
+    trigger_source: "Line3"
+    trigger_activation: "RisingEdge"
+
+    # ── Image ──────────────────────────────────────────────────────────────
+    # width: 1920    # default; smaller values crop a centered AOI
+    # height: 1200
+    camera_1_wb_red: 1.0
+    camera_1_wb_green: 1.0
+    camera_1_wb_blue: 1.0
+    camera_2_wb_red: 1.0
+    camera_2_wb_green: 1.0
+    camera_2_wb_blue: 1.0
+    camera_1_frame_id: "camera_1"
+    camera_2_frame_id: "camera_2"
+
+    verbose: false   # per-frame AE log on stdout

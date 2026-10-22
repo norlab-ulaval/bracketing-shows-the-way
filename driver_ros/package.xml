@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>basler_camera</name>
+  <version>1.0.0</version>
+  <description>
+    ROS 2 driver for a hardware-synchronized Basler GigE stereo pair with software
+    adaptive multi-exposure (bracketing) control, as used in "Bracketing Shows the Way:
+    Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM". Publishes raw
+    BayerRG8 images and per-frame exposure metadata. Requires the Basler pylon SDK.
+  </description>
+
+  <maintainer email="olivier.gamache@norlab.ulaval.ca">Olivier Gamache</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rcl_interfaces</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

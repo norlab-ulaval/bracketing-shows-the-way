@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bracketing Shows the Way</title>
+<meta name="description" content="B-Adapt adaptive exposure bracketing and BVSLAM, a factor-graph VSLAM that uses bracketed images directly, for robustness to rapid illumination changes.">
+<meta property="og:title" content="Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM">
+<meta property="og:image" content="assets/teaser.png">
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1d1d1f; --muted: #5f6368; --card: #f4f5f7;
+    --accent: #0b7a5c; --accent-fg: #ffffff; --border: #e2e4e8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121417; --fg: #e8eaed; --muted: #a0a6ad; --card: #1c1f24;
+      --accent: #3ccf9e; --accent-fg: #0d1512; --border: #2c3036;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121417; --fg: #e8eaed; --muted: #a0a6ad; --card: #1c1f24;
+    --accent: #3ccf9e; --accent-fg: #0d1512; --border: #2c3036;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 48px 16px 64px; }
+  header { text-align: center; }
+  h1 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.2; margin: 0 0 4px; }
+  .subtitle { font-size: clamp(1.05rem, 2.6vw, 1.35rem); color: var(--muted); margin: 0 0 20px; }
+  .authors { margin: 0; }
+  .affil { color: var(--muted); margin: 4px 0 20px; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 32px; }
+  .links a {
+    background: var(--accent); color: var(--accent-fg); text-decoration: none;
+    padding: 8px 18px; border-radius: 999px; font-weight: 600;
+  }
+  .links a:hover { opacity: .88; }
+  figure { margin: 0 0 32px; }
+  figure img { width: 100%; height: auto; border-radius: 8px; display: block; }
+  figcaption { color: var(--muted); font-size: .92rem; margin-top: 8px; }
+  h2 { font-size: 1.4rem; margin: 40px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .video { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card p { margin: 0; }
+  pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; overflow-x: auto; font-size: .85rem; line-height: 1.45;
+  }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Bracketing Shows the Way</h1>
+    <p class="subtitle">Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM</p>
+    <p class="authors">Olivier Gamache, Anthony Lavertu, David-Alexandre Duclos, Jean-Michel Fortin, François Pomerleau, Philippe Giguère</p>
+    <p class="affil">Northern Robotics Laboratory, Université Laval</p>
+    <nav class="links">
+      <a href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a>
+      <a href="https://github.com/norlab-ulaval/bracketing-shows-the-way">Code</a>
+      <a href="https://github.com/norlab-ulaval/bracketing-shows-the-way/releases/tag/v1.0">Sample data</a>
+      <a href="https://youtu.be/6PZw8dDni28">Video</a>
+    </nav>
+  </header>
+
+  <figure>
+    <img src="assets/teaser.png" alt="Tunnel exit: auto-exposure saturates while B-Adapt keeps features across exposures">
+    <figcaption>At a tunnel exit (30 lux to 80&nbsp;000 lux), auto-exposure adapts too slowly and saturates the images. B-Adapt keeps observable content across complementary exposures.</figcaption>
+  </figure>
+
+  <figure>
+    <video src="assets/bvslam_loop.mp4" poster="assets/bvslam_loop_poster.jpg" autoplay muted loop playsinline
+      style="width:100%;border-radius:8px;display:block" aria-label="B-Adapt + BVSLAM mapping a loop through two tunnel exits"></video>
+    <figcaption>B-Adapt + BVSLAM on a loop through two tunnel exits. Landmarks are colored by the bracket (Low, Mid, High) that first observed them, and the white line is the lidar-inertial reference.</figcaption>
+  </figure>
+
+  <h2>Abstract</h2>
+  <p>Rapid illumination transitions can disturb visual SLAM by saturating images before the auto-exposure (AE) policy adapts, removing the visual correspondences needed to maintain tracking. Our proposed methods mitigate this disturbance at two levels. B-Adapt acquires adaptive exposure brackets to cover the scene dynamic range while promoting photometric overlap. BVSLAM directly uses the multi-exposure sequence as constraints in a factor graph state estimator, without relying on HDR merging. We evaluate both methods against state-of-the-art approaches in nominal environments and during a repeated tunnel-exit transition at an emulated vehicle speed of 32&nbsp;m/s. In the tunnel, combining B-Adapt with BVSLAM reduces the state estimation error by 78% compared with AE images. These results suggest that bracketing efficiently improves visual pose estimation robustness to rapid illumination disturbances while retaining low error under nominal conditions.</p>
+
+  <h2>Video</h2>
+  <div class="video">
+    <iframe src="https://www.youtube-nocookie.com/embed/6PZw8dDni28" title="Bracketing Shows the Way video" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+      allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <h2>Method</h2>
+  <figure>
+    <img src="assets/pipeline.png" alt="B-Adapt and BVSLAM pipeline overview">
+    <figcaption>B-Adapt regulates the Low and High brackets with one-sided intensity-tail objectives and derives the intermediate exposure from them. BVSLAM associates features within one exposure step and a lookback window, and jointly constrains the poses from the bracketed sequence.</figcaption>
+  </figure>
+  <div class="cards">
+    <div class="card"><h3>B-Adapt</h3><p>An online acquisition policy with two independent control loops: one keeps the bright tail below saturation, the other keeps the dark tail above the noise floor. A minimum separation keeps the brackets from collapsing, and the L, M, H, M ordering keeps consecutive exposures similar.</p></div>
+    <div class="card"><h3>BVSLAM</h3><p>A stereo factor-graph VSLAM (GTSAM) that uses SuperPoint and LightGlue to link landmarks across exposure levels. It does not merge images into HDR and uses a zero-motion prior. It runs a sliding-window smoother followed by a global bundle adjustment.</p></div>
+  </div>
+
+  <h2>Experiments</h2>
+  <figure>
+    <img src="assets/setup.png" alt="Experimental platform and example frames">
+    <figcaption>A hardware-synchronized Basler stereo pair, a lidar and an IMU (for reference trajectories) and a luxmeter, mounted on a 1/5-scale RC car. Nominal indoor and forest trajectories, plus five repeated tunnel exits per policy.</figcaption>
+  </figure>
+
+  <h2>BibTeX</h2>
+  <p>If you use this code or data, please cite our paper. This is a placeholder entry; it will be updated with the arXiv identifier and the final publication details.</p>
+<pre><code>@article{gamache2026bracketing,
+  title   = {Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual {SLAM}},
+  author  = {Gamache, Olivier and Lavertu, Anthony and Duclos, David-Alexandre and Fortin, Jean-Michel and Pomerleau, Fran{\c{c}}ois and Gigu{\`e}re, Philippe},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026}
+}</code></pre>
+
+</main>
+</body>
+</html>

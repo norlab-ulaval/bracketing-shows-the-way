@@ -22,7 +22,7 @@ Rapid illumination transitions, such as a tunnel exit, saturate images before au
 
 <div align="center">
 <img src="docs/assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>
-<br><sub>B-Adapt + BVSLAM on a loop through two tunnel exits (2× speed). Landmarks are colored by the bracket (Low, Mid, High) that first observed them.</sub>
+<br><sub>B-Adapt + BVSLAM through two tunnel exits (2× speed).</sub>
 </div>
 
 ---
@@ -57,136 +57,89 @@ git clone https://github.com/norlab-ulaval/bracketing-shows-the-way.git
 cd bracketing-shows-the-way
 ```
 
-BVSLAM is pure Python and runs on Linux, with or without a GPU. Install it with Docker or natively. The B-Adapt driver has its own requirements (Pylon SDK, ROS 2) and is only needed to acquire new data; see [Acquisition with B-Adapt](#acquisition-with-b-adapt-ros-2-driver).
+BVSLAM runs on Linux, with or without a GPU. The driver is only needed to acquire new data ([see below](#acquisition-with-b-adapt-ros-2-driver)).
 
-**Docker (recommended).** Requirements: Docker. For GPU acceleration you also need an NVIDIA GPU with the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
-
-```bash
-docker compose build bvslam        # or bvslam-cpu without a GPU
-```
-
-The first build takes a while (about 5–20 min, mostly downloading PyTorch with its CUDA libraries), and the image is about 6 GB. Later builds reuse the cached dependencies and take under a minute.
-
-**Native.** Requirements: Python 3.11 and [uv](https://docs.astral.sh/uv/).
+**Docker (recommended).** For GPU support, install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 ```bash
-cd bvslam && uv sync --frozen && cd ..      # exact dependency versions used for the paper
+docker compose build bvslam        # or bvslam-cpu without a GPU; the first build takes 5–20 min
 ```
 
-The first `uv sync` downloads the same packages, which takes a few minutes.
+**Native.** Requires Python 3.11 and [uv](https://docs.astral.sh/uv/).
 
-The SuperPoint and LightGlue weights are downloaded on first use (the Docker image already contains them).
+```bash
+cd bvslam && uv sync --frozen && cd ..
+```
 
 ## Quick start: BVSLAM on the sample data
 
-The sample (1.3 GB, attached to the [v1.0 release](https://github.com/norlab-ulaval/bracketing-shows-the-way/releases/tag/v1.0)) is a 15 s tunnel traversal recorded with B-Adapt at about 23 Hz (approach, tunnel, exit into daylight), together with its stereo calibration.
+The sample (1.3 GB, [v1.0 release](https://github.com/norlab-ulaval/bracketing-shows-the-way/releases/tag/v1.0)) is a 15 s tunnel exit recorded with B-Adapt, with its calibration.
 
 ```bash
 ./scripts/download_sample.sh            # -> data/bstw_sample/
-./scripts/run_demo.sh                   # Docker (GPU if available)
-./scripts/run_demo.sh --native          # or with the native installation
+./scripts/run_demo.sh                   # Docker
+./scripts/run_demo.sh --native          # native
 ```
 
-While BVSLAM runs, a live [Rerun](https://rerun.io) view shows two rows:
-- top: the left and right images, with the tracked keypoints on the left image;
-- bottom: the trajectory and the landmark map.
-
-Landmarks and keypoints are colored by the bracket that first observed them: Low in blue, Mid in green, High in orange. Natively it opens the Rerun desktop window. With Docker, open the printed link (http://localhost:9090) and press Enter in the terminal when done. Set `BVSLAM_VIZ=none` to run without it.
-
-The trajectories are written to `output/` in TUM format: `<sequence>.tum` (sliding window) and `<sequence>_global_ba.tum` (after the global bundle adjustment). The demo uses [`bvslam/configs/paper.yaml`](bvslam/configs/paper.yaml). The sample takes about 2.5 min on an RTX 3090.
+A live [Rerun](https://rerun.io) view shows the images, the trajectory and the map (with Docker, open the printed link). Set `BVSLAM_VIZ=none` to disable it. The trajectories are written to `output/` in TUM format; `<sequence>_global_ba.tum` is the final one.
 
 ## Single-exposure example: FoMo
 
-BVSLAM also runs on ordinary single-exposure stereo cameras. The script below downloads 15 s (518 MB) of the snowy winter "red" trajectory of [FoMo](https://fomo.norlab.ulaval.ca), a multi-season dataset of the Montmorency Forest recorded with a ZED X stereo camera. It converts the segment to our layout:
+BVSLAM also runs on single-exposure stereo cameras. This downloads 15 s of a winter trajectory of the [FoMo](https://fomo.norlab.ulaval.ca) dataset (ZED X stereo camera, CC BY 4.0) and converts it:
 
 ```bash
 python3 scripts/download_fomo.py               # -> data/fomo_red_winter/
-./scripts/run_demo.sh data/fomo_red_winter     # color images are detected automatically
+./scripts/run_demo.sh data/fomo_red_winter
 ```
 
-The data come straight from FoMo's public bucket (CC BY 4.0) and are not redistributed here. `ground_truth_ppk.txt` holds FoMo's PPK-GNSS positions for the same time span, for reference. If you use them, please cite [FoMo](https://arxiv.org/abs/2603.08433) (Boxan et al., 2026).
+If you use these data, please cite [FoMo](https://arxiv.org/abs/2603.08433).
 
 ## Running BVSLAM on your own images
 
-BVSLAM runs on any calibrated stereo pair. Bracketed sequences make the most of it, but single-exposure images work too.
-
 ```
 <sequence_dir>/
-  images_left/<timestamp_ns>.png          any format OpenCV reads (png, jpg, ...); raw Bayer or ordinary images
-  images_right/<timestamp_ns>.png         same timestamps as the left images
-  images_meta_left/images_meta_left.csv   optional: columns `timestamp` and `ae_zone`
-<calibration_dir>/
-  stereo_calibration_left.yaml            ROS camera_info format: camera_matrix, distortion_coefficients,
-  stereo_calibration_right.yaml           rectification_matrix, projection_matrix
+  images_left/<timestamp_ns>.png          any image format; raw Bayer or ordinary images
+  images_right/<timestamp_ns>.png
+  images_meta_left/images_meta_left.csv   optional: columns `timestamp` and `ae_zone` (0 = Low, 1 = Mid, 2 = High)
+  calibration/stereo_calibration_{left,right}.yaml   ROS camera_info format
 ```
-
-- **Images.** Name each image by its timestamp in nanoseconds. Color images are converted to grayscale. Single-channel images are treated as raw Bayer RGGB (our cameras) and demosaiced; if yours are plain grayscale, pass `--bayer-pattern none`.
-- **Brackets.** `ae_zone` gives the exposure bracket of each frame: 0 = Low (shortest exposure), 1 = Mid, 2 = High. BVSLAM matches each image with the previous frames of its window, except between the Low and High brackets. Without the metadata file, all frames are treated as one exposure.
-- **Calibration.** Use the [ROS `camera_calibration`](http://wiki.ros.org/camera_calibration) stereo calibration output, one YAML file per camera.
-
-Run it with the demo script, or call `bvslam-run` directly for its options:
 
 ```bash
-./scripts/run_demo.sh [--native] /path/to/sequence [/path/to/calibration]   # calibration defaults to <sequence>/calibration
-cd bvslam && uv run bvslam-run --data-dir /path/to/sequence --calibration-dir /path/to/calibration \
-    --out ../output/my_sequence.tum
+./scripts/run_demo.sh [--native] /path/to/sequence [/path/to/calibration]
 ```
 
-Useful `bvslam-run` options:
-- `--viz auto|window|web|none`: the live view. `auto` (default) opens a window when a display is available, otherwise the web viewer. It only reads the estimator state, so the trajectories are identical with or without it.
-- `--bayer-pattern`: see *Images* above.
-- `--config`: a different YAML configuration (default: the paper values).
-
-See [`bvslam/README.md`](bvslam/README.md) for every option.
+Without the metadata file, all frames are treated as one exposure. Single-channel images are treated as raw Bayer RGGB; for plain grayscale images, call `bvslam-run` with `--bayer-pattern none`. See [`bvslam/README.md`](bvslam/README.md) for all options.
 
 ## Acquisition with B-Adapt (ROS 2 driver)
 
-The driver runs B-Adapt on Basler GigE cameras: a hardware-triggered stereo pair (we use two a2A1920-51gcPRO), or a single camera. It publishes the raw images and, for every frame, its exposure, gain and bracket. At startup it detects the connected cameras and starts acquiring: **stereo with two cameras, mono with one**. Mono mode is for using B-Adapt in your own pipeline, since BVSLAM needs stereo.
+The driver runs B-Adapt on Basler GigE cameras and starts acquiring as soon as it finds them: **stereo with two cameras, mono with one**. A live Rerun view opens by default (`viewer:=none` to disable it). Both installations need the [Pylon 12 SDK](https://www.baslerweb.com/en/downloads/software/), which cannot be redistributed.
 
-Both options need the **Pylon 12 SDK** from [Basler](https://www.baslerweb.com/en/downloads/software/). Basler's license does not allow redistribution, so neither this repository nor the Docker image includes it.
-
-**Native (Ubuntu 24.04 with ROS 2 Jazzy).** Install Pylon (the `.deb` installs it to `/opt/pylon`), then:
+**Native (Ubuntu 24.04, ROS 2 Jazzy).**
 
 ```bash
+pip install "rerun-sdk==0.23.1" "pyarrow<22"      # for the live view
 mkdir -p ~/ws/src && cd ~/ws/src
 git clone https://github.com/norlab-ulaval/bracketing-shows-the-way.git
-cd ~/ws && colcon build --packages-select basler_camera
-source install/setup.bash
+cd ~/ws && colcon build --packages-select basler_camera && source install/setup.bash
 ros2 launch basler_camera basler_camera.launch.py
 ```
 
-**Docker (any Linux with Docker).**
-1. Put Pylon in `docker/`, in one of two ways:
-   - download Pylon 12 for Linux (Debian package or setup tarball, x86_64 or aarch64) and put the file, unrenamed, in `docker/`;
-   - or, if Pylon is already installed on the computer, pack it: `tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`
+**Docker.** Put the Pylon installer in `docker/` (or pack an existing installation: `tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`), then:
 
-   `docker/.gitignore` keeps these files out of git.
-2. Build the image. This takes a few minutes the first time.
-   ```bash
-   docker compose build driver
-   ```
-3. Start the driver. The container uses the host network, so it sees the cameras:
-   ```bash
-   docker compose run --rm driver
-   docker compose run --rm driver ros2 launch basler_camera basler_camera.launch.py packet_size:=1500   # with launch options
-   ```
+```bash
+docker compose build driver
+docker compose run --rm driver                    # live view at the printed link
+```
 
-**Network.** Connect each camera to an Ethernet port on the same subnet as the camera. Basler's `ipconfigurator` (in `/opt/pylon/bin`) shows the camera's address and can change it. The default configuration uses 8192-byte jumbo packets, which need the port's MTU set to 9000 (`sudo ip link set <iface> mtu 9000`). On a standard port, start the node with `packet_size:=1500`; otherwise every grab fails with *"The buffer was incompletely grabbed"*.
+**Launch options:** `viewer`, `packet_size`, `camera_1_serial`, `camera_2_serial`, `config_file`, `respawn`. Example: `ros2 launch basler_camera basler_camera.launch.py packet_size:=1500`.
 
-**Live view.** Add `viewer:=rerun` to see the live feed in [Rerun](https://rerun.io): the left image, the right image, and the exposure value of every frame (exposure time and gain combined, in stops), colored by bracket (Low in blue, Mid in green, High in orange). It opens a window when a display is available, otherwise a web viewer at http://localhost:9090 (also with Docker). Natively it needs the Rerun SDK: `pip install "rerun-sdk==0.23.1" "pyarrow<22"`; the Docker image already includes it.
+**Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`.
 
-**Launch options:** `viewer`, `packet_size`, `camera_1_serial` and `camera_2_serial` (choose the cameras, left = camera_1), `config_file` (your own parameters) and `respawn`. See [`driver_ros/README.md`](driver_ros/README.md) for the wiring of the stereo trigger, the left/right assignment, the parameters and the published topics.
-
-**From recordings to BVSLAM:**
-1. Record `/basler/camera_{1,2}/image_raw` and `/basler/camera_{1,2}/image_meta` with `ros2 bag record`.
-2. Convert the bag to the [sequence layout](#running-bvslam-on-your-own-images) with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) and its [`configs/yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml):
-   ```bash
-   rosbag_extractor -i <bag_dir> -c yoda.yaml -o <sequence_dir>
-   ```
+See [`driver_ros/README.md`](driver_ros/README.md) for wiring, topics and parameters. To use your recordings with BVSLAM, convert the bag with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) (config [`yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml)).
 
 ## Parameters
 
-The values below are the ones used in the paper (Table I). They are already set in [`driver_ros/config/b_adapt.yaml`](driver_ros/config/b_adapt.yaml) and [`bvslam/configs/paper.yaml`](bvslam/configs/paper.yaml).
+Paper values (Table I), set in [`b_adapt.yaml`](driver_ros/config/b_adapt.yaml) and [`paper.yaml`](bvslam/configs/paper.yaml).
 
 **B-Adapt** (ROS 2 parameters)
 

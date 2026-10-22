@@ -16,10 +16,18 @@ Requires the Rerun SDK: pip install "rerun-sdk==0.23.1" "pyarrow<22"
 import math
 import os
 
+import sys
+
 import numpy as np
 import rclpy
-import rerun as rr
-import rerun.blueprint as rrb
+
+try:
+    import rerun as rr
+    import rerun.blueprint as rrb
+except ImportError:
+    print('[rerun_view] Rerun is not installed: pip install "rerun-sdk==0.23.1" "pyarrow<22". '
+          "The driver keeps running; launch with viewer:=none to hide this message.", file=sys.stderr)
+    sys.exit(0)
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image

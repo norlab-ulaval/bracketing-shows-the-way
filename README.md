@@ -144,10 +144,11 @@ See [`bvslam/README.md`](bvslam/README.md) for every option.
 
 ## Acquisition with B-Adapt (ROS 2 driver)
 
-The driver runs B-Adapt on a hardware-triggered stereo pair of Basler GigE cameras (we use two a2A1920-51gcPRO), or on a single camera. It publishes the raw images and, for every frame, its exposure, gain and bracket.
+The driver runs B-Adapt on Basler GigE cameras: a hardware-triggered stereo pair (we use two a2A1920-51gcPRO), or a single camera. It publishes the raw images and, for every frame, its exposure, gain and bracket. At startup it detects the connected cameras and starts acquiring: **stereo with two cameras, mono with one**. Mono mode is for using B-Adapt in your own pipeline, since BVSLAM needs stereo.
 
-1. Install the Pylon 12 SDK from [Basler](https://www.baslerweb.com/en/downloads/software/). Basler's license does not allow redistribution, so neither this repository nor the Docker image ships it.
-2. Build and start the node. With no serial numbers given, it detects the connected cameras and starts the acquisition: stereo with two cameras, mono with one.
+Both options need the **Pylon 12 SDK** from [Basler](https://www.baslerweb.com/en/downloads/software/). Basler's license does not allow redistribution, so neither this repository nor the Docker image includes it.
+
+**Native (Ubuntu 24.04 with ROS 2 Jazzy).** Install Pylon (the `.deb` installs it to `/opt/pylon`), then:
 
 ```bash
 mkdir -p ~/ws/src && cd ~/ws/src
@@ -157,13 +158,25 @@ source install/setup.bash
 ros2 launch basler_camera basler_camera.launch.py
 ```
 
-**Network.** The default configuration uses 8192-byte jumbo packets, which need the MTU of the camera's network interface set to 9000 (`sudo ip link set <iface> mtu 9000`). On a standard interface, start the node with `packet_size:=1500`. Otherwise every grab fails with *"The buffer was incompletely grabbed"*.
+**Docker (any Linux with Docker).**
+1. Download Pylon 12 for Linux (Debian package or setup tarball, x86_64 or aarch64) and put the file, unrenamed, in `docker/`.
+2. Build the image. This takes a few minutes the first time.
+   ```bash
+   docker compose build driver
+   ```
+3. Start the driver. The container uses the host network, so it sees the cameras:
+   ```bash
+   docker compose run --rm driver
+   docker compose run --rm driver ros2 launch basler_camera basler_camera.launch.py packet_size:=1500   # with launch options
+   ```
 
-Mono mode runs B-Adapt on a single Basler camera, for your own pipeline; BVSLAM itself needs stereo. With Docker, place the Pylon `.deb` in `docker/` and run `docker compose build driver` (a few minutes the first time). See [`driver_ros/README.md`](driver_ros/README.md) for wiring, left/right assignment, mono mode, parameters and published topics.
+**Network.** Connect each camera to an Ethernet port on the same subnet as the camera. Basler's `ipconfigurator` (in `/opt/pylon/bin`) shows the camera's address and can change it. The default configuration uses 8192-byte jumbo packets, which need the port's MTU set to 9000 (`sudo ip link set <iface> mtu 9000`). On a standard port, start the node with `packet_size:=1500`; otherwise every grab fails with *"The buffer was incompletely grabbed"*.
 
-To run BVSLAM on your recordings:
+**Launch options:** `packet_size`, `camera_1_serial` and `camera_2_serial` (choose the cameras, left = camera_1), `config_file` (your own parameters) and `respawn`. See [`driver_ros/README.md`](driver_ros/README.md) for the wiring of the stereo trigger, the left/right assignment, the parameters and the published topics.
+
+**From recordings to BVSLAM:**
 1. Record `/basler/camera_{1,2}/image_raw` and `/basler/camera_{1,2}/image_meta` with `ros2 bag record`.
-2. Convert the bag to the sequence layout above with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) and its [`configs/yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml):
+2. Convert the bag to the [sequence layout](#running-bvslam-on-your-own-images) with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) and its [`configs/yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml):
    ```bash
    rosbag_extractor -i <bag_dir> -c yoda.yaml -o <sequence_dir>
    ```

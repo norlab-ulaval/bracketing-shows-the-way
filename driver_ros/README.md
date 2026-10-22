@@ -106,6 +106,7 @@ ros2 launch basler_camera basler_camera.launch.py \
     camera_1_serial:=<left serial> camera_2_serial:=<right serial>
 ros2 launch basler_camera basler_camera.launch.py camera_1_serial:=<serial>   # mono
 ros2 launch basler_camera basler_camera.launch.py packet_size:=1500   # standard NIC, no jumbo frames
+ros2 launch basler_camera basler_camera.launch.py viewer:=rerun       # live Rerun view
 ros2 launch basler_camera basler_camera.launch.py config_file:=/path/to/my.yaml
 ```
 
@@ -140,6 +141,17 @@ needs the stereo pair.
 On a fatal camera error (camera not found, link lost) the node logs the
 error and exits with code 1. With `respawn:=true` the launch file restarts
 it after 2 s; the controller then restarts from a new AE-Once seed.
+
+
+## Live view
+
+`viewer:=rerun` (or `ros2 run basler_camera rerun_view.py` next to a running
+driver) shows the live feed in Rerun, in one row: left image, right image (empty
+in mono mode), and the exposure time and gain of every frame, one line per
+bracket (Low blue, Mid green, High orange). It only subscribes to the driver's
+topics. It opens a window when a display is available, otherwise a web viewer at
+http://localhost:9090 (parameter `mode:=window|web`). Natively it needs
+`pip install "rerun-sdk==0.23.1" "pyarrow<22"`; the Docker image includes it.
 
 ## Known limitations
 

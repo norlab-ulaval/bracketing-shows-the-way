@@ -172,7 +172,9 @@ ros2 launch basler_camera basler_camera.launch.py
 
 **Network.** Connect each camera to an Ethernet port on the same subnet as the camera. Basler's `ipconfigurator` (in `/opt/pylon/bin`) shows the camera's address and can change it. The default configuration uses 8192-byte jumbo packets, which need the port's MTU set to 9000 (`sudo ip link set <iface> mtu 9000`). On a standard port, start the node with `packet_size:=1500`; otherwise every grab fails with *"The buffer was incompletely grabbed"*.
 
-**Launch options:** `packet_size`, `camera_1_serial` and `camera_2_serial` (choose the cameras, left = camera_1), `config_file` (your own parameters) and `respawn`. See [`driver_ros/README.md`](driver_ros/README.md) for the wiring of the stereo trigger, the left/right assignment, the parameters and the published topics.
+**Live view.** Add `viewer:=rerun` to see the live feed in [Rerun](https://rerun.io): the left image, the right image, and the exposure time and gain of every frame, colored by bracket (Low in blue, Mid in green, High in orange). It opens a window when a display is available, otherwise a web viewer at http://localhost:9090 (also with Docker). Natively it needs the Rerun SDK: `pip install "rerun-sdk==0.23.1" "pyarrow<22"`; the Docker image already includes it.
+
+**Launch options:** `viewer`, `packet_size`, `camera_1_serial` and `camera_2_serial` (choose the cameras, left = camera_1), `config_file` (your own parameters) and `respawn`. See [`driver_ros/README.md`](driver_ros/README.md) for the wiring of the stereo trigger, the left/right assignment, the parameters and the published topics.
 
 **From recordings to BVSLAM:**
 1. Record `/basler/camera_{1,2}/image_raw` and `/basler/camera_{1,2}/image_meta` with `ros2 bag record`.

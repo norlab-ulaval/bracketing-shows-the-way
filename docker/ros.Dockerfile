@@ -23,8 +23,9 @@
 
 FROM ros:jazzy-ros-base AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential cmake python3-colcon-common-extensions \
-    && rm -rf /var/lib/apt/lists/*
+        build-essential cmake python3-colcon-common-extensions python3-pip \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip3 install --no-cache-dir --break-system-packages "rerun-sdk==0.23.1" "pyarrow<22"   # live viewer
 WORKDIR /ws
 
 # ── pylon SDK from the user-supplied package (docker/pylon*) ────────────

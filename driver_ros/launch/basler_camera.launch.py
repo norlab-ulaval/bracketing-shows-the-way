@@ -4,6 +4,7 @@
     ros2 launch basler_camera basler_camera.launch.py \
         camera_1_serial:=<left serial> camera_2_serial:=<right serial>
     ros2 launch basler_camera basler_camera.launch.py packet_size:=1500   # no jumbo frames
+    ros2 launch basler_camera basler_camera.launch.py viewer:=rerun       # live Rerun view
 
 Without serials the node auto-detects the cameras: one = mono, two = stereo
 (lowest serial = camera_1, left). Only camera_1_serial set = mono.
@@ -36,6 +37,10 @@ def generate_launch_description():
                         "The YAML uses 8192, which needs jumbo frames (MTU 9000) on the camera network "
                         "interface; use 1500 on a standard interface"),
         DeclareLaunchArgument(
+            "viewer", default_value="none",
+            description="'rerun' also starts a live Rerun view (left image, right image, exposure and "
+                        "gain per bracket): a window if a display is available, else a web viewer on port 9090"),
+        DeclareLaunchArgument(
             "node_name", default_value="basler_camera",
             description="Node name"),
         DeclareLaunchArgument(
@@ -65,7 +70,10 @@ def _launch_node(context, *args, **kwargs):
         params.append(overrides)
 
     respawn = LaunchConfiguration("respawn").perform(context).lower() in ("true", "1", "yes")
-    return [Node(
+    nodes = []
+    if LaunchConfiguration("viewer").perform(context) == "rerun":
+        nodes.append(Node(package="basler_camera", executable="rerun_view.py", name="rerun_view", output="screen"))
+    return nodes + [Node(
         package="basler_camera",
         executable="basler_camera_node",
         name=LaunchConfiguration("node_name").perform(context),

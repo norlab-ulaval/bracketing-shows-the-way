@@ -40,6 +40,10 @@ install(TARGETS basler_camera_node
     DESTINATION lib/${PROJECT_NAME}
 )
 
+install(PROGRAMS scripts/rerun_view.py
+    DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY config launch
     DESTINATION share/${PROJECT_NAME}
 )

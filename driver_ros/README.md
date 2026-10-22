@@ -112,6 +112,15 @@ ros2 launch basler_camera basler_camera.launch.py viewer:=none        # without 
 ros2 launch basler_camera basler_camera.launch.py config_file:=/path/to/my.yaml
 ```
 
+| Option | Values | Default |
+|---|---|---|
+| `viewer` | `rerun`, `none` | `rerun` |
+| `packet_size` | GigE packet size in bytes, e.g. `1500` or `8192` | `8192` (from the config) |
+| `camera_1_serial`, `camera_2_serial` | camera serial numbers (camera_1 = left); only `camera_1_serial` = mono | empty = auto-detect |
+| `config_file` | path to a parameter YAML | `config/b_adapt.yaml` |
+| `respawn` | `true`, `false` (restart after a camera error) | `true` |
+| `node_name` | ROS node name | `basler_camera` |
+
 **Camera auto-detection.** `camera_1_serial` and `camera_2_serial` are empty
 by default (in `config/b_adapt.yaml` and the launch file). The node then
 enumerates the Basler cameras it can see at startup:

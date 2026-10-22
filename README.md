@@ -133,19 +133,9 @@ docker compose run --rm driver
 
 Live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
 
-**Launch options** (e.g. `ros2 launch basler_camera basler_camera.launch.py packet_size:=1500`):
-
-| Option | Values | Default |
-|---|---|---|
-| `viewer` | `rerun`, `none` | `rerun` |
-| `packet_size` | GigE packet size in bytes, e.g. `1500` or `8192` | `8192` (from the config) |
-| `camera_1_serial`, `camera_2_serial` | camera serial numbers (camera_1 = left); only `camera_1_serial` = mono | empty = auto-detect |
-| `config_file` | path to a parameter YAML | `config/b_adapt.yaml` |
-| `respawn` | `true`, `false` (restart after a camera error) | `true` |
-
 **Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`.
 
-See [`driver_ros/README.md`](driver_ros/README.md) for wiring, topics and parameters. To use your recordings with BVSLAM, convert the bag with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) (config [`yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml)).
+See [`driver_ros/README.md`](driver_ros/README.md) for the launch options, wiring, topics and parameters. To use your recordings with BVSLAM, convert the bag with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) (config [`yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml)).
 
 ## Parameters
 

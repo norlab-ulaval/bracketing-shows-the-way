@@ -81,7 +81,7 @@ The sample (1.3 GB, [v1.0 release](https://github.com/norlab-ulaval/bracketing-s
 ./scripts/run_demo.sh --native          # native
 ```
 
-A live [Rerun](https://rerun.io) view shows the images, the trajectory and the map (with Docker, open the printed link). Set `BVSLAM_VIZ=none` to disable it. The trajectories are written to `output/` in TUM format; `<sequence>_global_ba.tum` is the final one.
+A live [Rerun](https://rerun.io) view shows the images, the trajectory and the map. Natively it opens a window; with Docker, open http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy. Set `BVSLAM_VIZ=none` to disable it. The trajectories are written to `output/` in TUM format; `<sequence>_global_ba.tum` is the final one.
 
 ## Single-exposure example: FoMo
 
@@ -128,10 +128,18 @@ ros2 launch basler_camera basler_camera.launch.py
 
 ```bash
 docker compose build driver
-docker compose run --rm driver                    # live view at the printed link
+docker compose run --rm driver                    # live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
 ```
 
-**Launch options:** `viewer`, `packet_size`, `camera_1_serial`, `camera_2_serial`, `config_file`, `respawn`. Example: `ros2 launch basler_camera basler_camera.launch.py packet_size:=1500`.
+**Launch options** (e.g. `ros2 launch basler_camera basler_camera.launch.py packet_size:=1500`):
+
+| Option | Values | Default |
+|---|---|---|
+| `viewer` | `rerun`, `none` | `rerun` |
+| `packet_size` | GigE packet size in bytes, e.g. `1500` or `8192` | `8192` (from the config) |
+| `camera_1_serial`, `camera_2_serial` | camera serial numbers (camera_1 = left); only `camera_1_serial` = mono | empty = auto-detect |
+| `config_file` | path to a parameter YAML | `config/b_adapt.yaml` |
+| `respawn` | `true`, `false` (restart after a camera error) | `true` |
 
 **Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`.
 

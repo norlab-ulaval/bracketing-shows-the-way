@@ -133,7 +133,11 @@ docker compose run --rm driver
 
 Live view: http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy
 
-**Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`.
+**Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`:
+
+```bash
+ros2 launch basler_camera basler_camera.launch.py packet_size:=1500
+```
 
 See [`driver_ros/README.md`](driver_ros/README.md) for the launch options, wiring, topics and parameters. To use your recordings with BVSLAM, convert the bag with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) (config [`yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml)).
 

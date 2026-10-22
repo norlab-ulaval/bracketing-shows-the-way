@@ -4,10 +4,6 @@
 
 # Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
 
-[Olivier Gamache](https://norlab.ulaval.ca), Anthony Lavertu, David-Alexandre Duclos, Jean-Michel Fortin, François Pomerleau, Philippe Giguère
-
-Northern Robotics Laboratory, Université Laval
-
 [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
 [![Project page](https://img.shields.io/badge/Project-Page-2ea44f.svg)](https://norlab-ulaval.github.io/bracketing-shows-the-way/)
 [![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/6PZw8dDni28)
@@ -124,20 +120,30 @@ cd ~/ws && colcon build --packages-select basler_camera && source install/setup.
 ros2 launch basler_camera basler_camera.launch.py
 ```
 
-**Docker.** Put the Pylon installer in `docker/` (or pack an existing installation: `tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`), then:
+**Docker.** 
+
+Put the Pylon installer in `docker/` (or pack an existing installation: `tar -C /opt/pylon -czf docker/pylon-local.tar.gz .`), then:
 
 ```bash
 docker compose build driver
 docker compose run --rm driver
 ```
 
-While the driver is running, open the live view at http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy (the link only works on the computer running it).
+While the driver is running, open the live view at http://localhost:9090/?url=rerun%2Bhttp://localhost:9876/proxy.
 
-**Network.** The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`:
+**Network.** 
 
+The cameras must be on the same subnet as their Ethernet port. The default 8192-byte packets need jumbo frames (`sudo ip link set <iface> mtu 9000`); otherwise use `packet_size:=1500`.
+
+**ROS launch parameters.**
+
+Native (example):
 ```bash
-ros2 launch basler_camera basler_camera.launch.py packet_size:=1500                          # native
-docker compose run --rm driver ros2 launch basler_camera basler_camera.launch.py packet_size:=1500   # Docker
+ros2 launch basler_camera basler_camera.launch.py packet_size:=1500
+```
+Docker (example):
+```bash
+docker compose run --rm driver ros2 launch basler_camera basler_camera.launch.py packet_size:=1500
 ```
 
 See [`driver_ros/README.md`](driver_ros/README.md) for the launch options, wiring, topics and parameters. To use your recordings with BVSLAM, convert the bag with [rosbag_extractor](https://github.com/norlab-ulaval/rosbag_extractor/tree/c40a158ae05129df398fc3d7ee5d1f21ac666123) (config [`yoda.yaml`](https://github.com/norlab-ulaval/rosbag_extractor/blob/c40a158ae05129df398fc3d7ee5d1f21ac666123/configs/yoda.yaml)).

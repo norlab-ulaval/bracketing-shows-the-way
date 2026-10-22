@@ -1,7 +1,8 @@
 <div align="center">
 
-# Bracketing Shows the Way
-### Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
+<img src="docs/assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
+
+# Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
 
 [Olivier Gamache](https://norlab.ulaval.ca), Anthony Lavertu, David-Alexandre Duclos, Jean-Michel Fortin, François Pomerleau, Philippe Giguère
 
@@ -12,16 +13,12 @@ Northern Robotics Laboratory, Université Laval
 [![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/6PZw8dDni28)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-<img src="docs/assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
-
 </div>
 
 Rapid illumination transitions, such as a tunnel exit, saturate images before auto-exposure (AE) can adapt, and the features a visual SLAM system needs disappear. We mitigate this at two levels:
 
 - **B-Adapt** (acquisition side) is an online bracketing policy for a stereo camera pair. Two independent loops regulate the darkest and brightest exposures from one-sided intensity-tail objectives, and an intermediate exposure bridges them.
 - **BVSLAM** (estimation side) is a factor-graph stereo VSLAM that uses the bracketed sequence **directly**, with no HDR merge. It associates SuperPoint/LightGlue features across neighbouring exposure levels.
-
-In a repeated tunnel-exit transition at an emulated 32 m/s, B-Adapt + BVSLAM reduces the RPE by **78 %** compared with AE images.
 
 <div align="center">
 <img src="docs/assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>

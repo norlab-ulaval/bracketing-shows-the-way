@@ -38,8 +38,8 @@ def generate_launch_description():
                         "interface; use 1500 on a standard interface"),
         DeclareLaunchArgument(
             "viewer", default_value="none",
-            description="'rerun' also starts a live Rerun view (left image, right image, exposure and "
-                        "gain per bracket): a window if a display is available, else a web viewer on port 9090"),
+            description="'rerun' also starts a live Rerun view (left image, right image, exposure "
+                        "value per bracket): a window if a display is available, else a web viewer on port 9090"),
         DeclareLaunchArgument(
             "node_name", default_value="basler_camera",
             description="Node name"),

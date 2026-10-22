@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Live Rerun view of the B-Adapt driver: left image, right image, and the
-exposure time and gain of every frame, colored by bracket.
+exposure value of every frame, colored by bracket.
+
+Exposure value (stops) = log2(exposure_us * 10^(gain_db / 20)): exposure time and
+gain combined, as B-Adapt controls them.
 
 Read-only: it only subscribes to the driver's topics.
 
@@ -10,6 +13,7 @@ Read-only: it only subscribes to the driver's topics.
 Requires the Rerun SDK: pip install "rerun-sdk==0.23.1" "pyarrow<22"
 """
 
+import math
 import os
 
 import numpy as np
@@ -35,15 +39,11 @@ def debayer_rggb_half(raw: np.ndarray) -> np.ndarray:
 
 
 def blueprint() -> rrb.Blueprint:
-    plots = [
-        rrb.TimeSeriesView(origin=f"/{quantity}", name=title)
-        for quantity, title in (("exposure_us", "Exposure time (µs)"), ("gain_db", "Gain (dB)"))
-    ]
     return rrb.Blueprint(
         rrb.Horizontal(
             rrb.Spatial2DView(origin="/camera_1", name="Left camera"),
             rrb.Spatial2DView(origin="/camera_2", name="Right camera"),
-            rrb.Vertical(*plots),
+            rrb.TimeSeriesView(origin="/exposure_value", name="Exposure value (stops)"),
         ),
         collapse_panels=True,
     )
@@ -65,9 +65,8 @@ class RerunView(Node):
             rr.serve_web_viewer(web_port=web_port, open_browser=False, connect_to=url)
             self.get_logger().info(f"Rerun web viewer: http://localhost:{web_port}/?url={url.replace('127.0.0.1', 'localhost').replace('+', '%2B')}")
 
-        for bracket, (name, color) in BRACKETS.items():
-            for quantity in ("exposure_us", "gain_db"):
-                rr.log(f"{quantity}/{name}", rr.SeriesLines(colors=[color], names=[name], widths=[2.0]), static=True)
+        for name, color in BRACKETS.values():
+            rr.log(f"exposure_value/{name}", rr.SeriesLines(colors=[color], names=[name], widths=[2.0]), static=True)
 
         for cam in ("camera_1", "camera_2"):
             self.create_subscription(Image, f"basler/{cam}/image_raw", lambda m, c=cam: self.on_image(c, m), qos_profile_sensor_data)
@@ -85,8 +84,7 @@ class RerunView(Node):
     def on_meta(self, msg: BaslerFrameMeta) -> None:
         name = BRACKETS.get(msg.ae_zone, ("Mid", None))[0]
         self.set_time(msg.header.stamp)
-        rr.log(f"exposure_us/{name}", rr.Scalars(msg.exposure_us))
-        rr.log(f"gain_db/{name}", rr.Scalars(msg.gain_db))
+        rr.log(f"exposure_value/{name}", rr.Scalars(math.log2(msg.exposure_us * 10 ** (msg.gain_db / 20))))
 
 
 def main() -> None:

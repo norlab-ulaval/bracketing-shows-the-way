@@ -147,8 +147,8 @@ it after 2 s; the controller then restarts from a new AE-Once seed.
 
 `viewer:=rerun` (or `ros2 run basler_camera rerun_view.py` next to a running
 driver) shows the live feed in Rerun, in one row: left image, right image (empty
-in mono mode), and the exposure time and gain of every frame, one line per
-bracket (Low blue, Mid green, High orange). It only subscribes to the driver's
+in mono mode), and the exposure value of every frame (log2 of exposure time
+x gain), one line per bracket (Low blue, Mid green, High orange). It only subscribes to the driver's
 topics. It opens a window when a display is available, otherwise a web viewer at
 http://localhost:9090 (parameter `mode:=window|web`). Natively it needs
 `pip install "rerun-sdk==0.23.1" "pyarrow<22"`; the Docker image includes it.

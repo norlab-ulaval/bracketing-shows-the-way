@@ -68,11 +68,15 @@ BVSLAM is pure Python and runs on Linux, with or without a GPU. Install it with 
 docker compose build bvslam        # or bvslam-cpu without a GPU
 ```
 
+The first build takes a while (about 5–20 min, mostly downloading PyTorch with its CUDA libraries), and the image is about 6 GB. Later builds reuse the cached dependencies and take under a minute.
+
 **Native.** Requirements: Python 3.11 and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 cd bvslam && uv sync --frozen && cd ..      # exact dependency versions used for the paper
 ```
+
+The first `uv sync` downloads the same packages, which takes a few minutes.
 
 The SuperPoint and LightGlue weights are downloaded on first use (the Docker image already contains them).
 
@@ -155,7 +159,7 @@ ros2 launch basler_camera basler_camera.launch.py
 
 **Network.** The default configuration uses 8192-byte jumbo packets, which need the MTU of the camera's network interface set to 9000 (`sudo ip link set <iface> mtu 9000`). On a standard interface, start the node with `packet_size:=1500`. Otherwise every grab fails with *"The buffer was incompletely grabbed"*.
 
-Mono mode runs B-Adapt on a single Basler camera, for your own pipeline; BVSLAM itself needs stereo. With Docker, place the Pylon `.deb` in `docker/` and run `docker compose build driver`. See [`driver_ros/README.md`](driver_ros/README.md) for wiring, left/right assignment, mono mode, parameters and published topics.
+Mono mode runs B-Adapt on a single Basler camera, for your own pipeline; BVSLAM itself needs stereo. With Docker, place the Pylon `.deb` in `docker/` and run `docker compose build driver` (a few minutes the first time). See [`driver_ros/README.md`](driver_ros/README.md) for wiring, left/right assignment, mono mode, parameters and published topics.
 
 To run BVSLAM on your recordings:
 1. Record `/basler/camera_{1,2}/image_raw` and `/basler/camera_{1,2}/image_meta` with `ros2 bag record`.

@@ -13,6 +13,9 @@ from __future__ import annotations
 
 import logging
 import os
+import shutil
+import sys
+from pathlib import Path
 
 import gtsam
 import numpy as np
@@ -54,8 +57,18 @@ def _blueprint() -> rrb.Blueprint:
 class RerunViewer:
     def __init__(self, mode: str, builder: PoseGraphBuilder, frames: list[FrameInfo],
                  web_port: int = 9090, grpc_port: int = 9876) -> None:
-        if mode == "auto":
-            mode = "window" if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY") else "web"
+        if mode in ("auto", "window"):
+            # The viewer window is a separate `rerun` program, installed next to
+            # this Python interpreter; make sure it can be found even when the
+            # environment is not activated.
+            bin_dir = str(Path(sys.executable).parent)
+            if shutil.which("rerun") is None and shutil.which("rerun", path=bin_dir):
+                os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
+            has_display = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+            if mode == "auto" or shutil.which("rerun") is None:
+                if mode == "window":
+                    log.warning("The Rerun viewer program was not found; using the web viewer instead")
+                mode = "window" if has_display and shutil.which("rerun") else "web"
         self.mode = mode
         self.builder = builder
         self.frames = frames

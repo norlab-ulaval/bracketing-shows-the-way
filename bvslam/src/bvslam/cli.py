@@ -117,9 +117,13 @@ def main(argv: list[str] | None = None) -> None:
     builder = PoseGraphBuilder(cfg, rig)
     viewer = None
     if args.viz != "none":
-        from bvslam.viz import RerunViewer  # optional: only imported when visualizing
+        # The visualization is optional: never let it stop a run.
+        try:
+            from bvslam.viz import RerunViewer
 
-        viewer = RerunViewer(args.viz, builder, frames, web_port=args.web_port)
+            viewer = RerunViewer(args.viz, builder, frames, web_port=args.web_port)
+        except Exception as e:
+            log.warning("Visualization disabled (%s: %s); continuing without it", type(e).__name__, e)
     t0 = time.time()
     results = builder.run(frames, on_frame=viewer.on_frame if viewer else None)
     elapsed = time.time() - t0

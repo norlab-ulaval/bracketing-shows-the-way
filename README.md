@@ -1,11 +1,10 @@
 <div align="center">
 
-<img src="docs/assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
+<img src="assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
 
 # Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
 
 [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
-[![Project page](https://img.shields.io/badge/Project-Page-2ea44f.svg)](https://norlab-ulaval.github.io/bracketing-shows-the-way/)
 [![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/6PZw8dDni28)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -17,7 +16,7 @@ Rapid illumination transitions, such as a tunnel exit, saturate images before au
 - **BVSLAM** (estimation side) is a factor-graph stereo VSLAM that uses the bracketed sequence **directly**, with no HDR merge. It associates SuperPoint/LightGlue features across neighbouring exposure levels.
 
 <div align="center">
-<img src="docs/assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>
+<img src="assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>
 <br><sub>B-Adapt + BVSLAM through two tunnel exits (2× speed).</sub>
 </div>
 
@@ -43,7 +42,7 @@ driver_ros/    ROS 2 Jazzy node running B-Adapt
 bvslam/        BVSLAM: Python factor-graph stereo VSLAM (GTSAM, SuperPoint + LightGlue)
 docker/        Dockerfiles for BVSLAM (GPU or CPU) and for the ROS 2 driver
 scripts/       Data download and demo
-docs/          Project page (GitHub Pages)
+assets/        README figures
 ```
 
 ## Installation

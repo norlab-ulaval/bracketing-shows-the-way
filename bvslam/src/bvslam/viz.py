@@ -80,7 +80,7 @@ class RerunViewer:
         else:
             grpc_url = self.rec.serve_grpc(grpc_port=grpc_port, default_blueprint=_blueprint())
             rr.serve_web_viewer(web_port=web_port, open_browser=False, connect_to=grpc_url)
-            self.web_url = f"http://localhost:{web_port}/?url={grpc_url.replace('127.0.0.1', 'localhost')}"
+            self.web_url = f"http://localhost:{web_port}/?url={grpc_url.replace('127.0.0.1', 'localhost').replace('+', '%2B')}"
             log.info("Rerun web viewer: %s", self.web_url)
 
         K = builder.K_stereo

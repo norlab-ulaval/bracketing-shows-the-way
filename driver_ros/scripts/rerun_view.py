@@ -63,7 +63,7 @@ class RerunView(Node):
         else:
             url = rr.serve_grpc(default_blueprint=blueprint())
             rr.serve_web_viewer(web_port=web_port, open_browser=False, connect_to=url)
-            self.get_logger().info(f"Rerun web viewer: http://localhost:{web_port}/?url={url.replace('127.0.0.1', 'localhost')}")
+            self.get_logger().info(f"Rerun web viewer: http://localhost:{web_port}/?url={url.replace('127.0.0.1', 'localhost').replace('+', '%2B')}")
 
         for bracket, (name, color) in BRACKETS.items():
             for quantity in ("exposure_us", "gain_db"):

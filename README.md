@@ -6,7 +6,10 @@
 [![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/6PZw8dDni28)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-<img src="assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
+<div align="center">
+<img src="assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>
+<br><sub>B-Adapt + BVSLAM through two tunnel exits (2× speed).</sub>
+</div>
 
 </div>
 
@@ -16,8 +19,7 @@ Rapid illumination transitions, such as a tunnel exit, saturate images before au
 - **BVSLAM** (estimation side) is a factor-graph stereo VSLAM that uses the bracketed sequence **directly**, with no HDR merge. It associates SuperPoint/LightGlue features across neighbouring exposure levels.
 
 <div align="center">
-<img src="assets/bvslam_loop.gif" width="80%" alt="B-Adapt + BVSLAM mapping a loop through two tunnel exits; landmarks are colored by the bracket that first observed them"/>
-<br><sub>B-Adapt + BVSLAM through two tunnel exits (2× speed).</sub>
+<img src="assets/pipeline.png" width="100%" alt="B-Adapt and BVSLAM pipeline"/>
 </div>
 
 ---

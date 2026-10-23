@@ -3,7 +3,7 @@
 # Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
 
 [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
-[![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/6PZw8dDni28)
+[![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/LZGkNU1_s2g)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <div align="center">

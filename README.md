@@ -187,7 +187,7 @@ If you use this code or data, please cite our paper:
 
 ```bibtex
 @misc{gamache2026bracketing,
-  title         = {Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual {SLAM}},
+  title         = {{Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual {SLAM}}},
   author        = {Gamache, Olivier and Lavertu, Anthony and Duclos, David-Alexandre and Fortin, Jean-Michel and Pomerleau, Fran{\c{c}}ois and Gigu{\`e}re, Philippe},
   year          = {2026},
   eprint        = {2610.33174},

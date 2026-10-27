@@ -3,7 +3,7 @@
 #
 #   ./scripts/run_demo.sh [--native] [SEQUENCE_DIR] [CALIBRATION_DIR]
 #
-# SEQUENCE_DIR     folder with images_left/, images_right/, images_meta_left/, images_meta_right/
+# SEQUENCE_DIR     folder with images_left/, images_right/ and, optionally, images_meta_left/
 #                  (default: the sample B-Adapt tunnel exit, data/bstw_sample/tunnel_exit_b_adapt)
 # CALIBRATION_DIR  folder with stereo_calibration_{left,right}.yaml
 #                  (default: <SEQUENCE_DIR>/calibration if it exists, else data/bstw_sample/calibration)

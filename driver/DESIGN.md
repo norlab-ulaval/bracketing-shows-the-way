@@ -108,8 +108,7 @@ with a near-white target (250) a fully clipped frame would otherwise give
 `r = 250/255` and barely move.
 
 Every move is a fixed-rate EMA, `new = (1 - λ) · old + λ · proposal`, with
-λ = `ae_zone_alpha[zone]`. Exposure and gain are strictly sequenced so only
-one of them moves in a given frame:
+λ = `ae_zone_alpha[zone]`. Exposure and gain follow a priority order:
 
 * **Need more light (r ≥ 1), exposure first.** Proposal
   `E' = clamp(E·r, min_exposure_us, max_exposure_us)`. Gain rises only when

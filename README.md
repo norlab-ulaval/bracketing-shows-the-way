@@ -36,6 +36,8 @@ Rapid illumination transitions, such as a tunnel exit, saturate images before au
 - [License and acknowledgments](#license-and-acknowledgments)
 - [Citation](#citation)
 
+This repository contains our two methods, B-Adapt and BVSLAM. The baselines compared in the paper (auto-exposure, fixed bracketing, HDRFlow, ORB-SLAM3, cuVSLAM, AirSLAM) are not included.
+
 ## Repository layout
 
 ```
@@ -109,7 +111,7 @@ Without the metadata file, all frames are treated as one exposure. Single-channe
 
 ## Acquisition with B-Adapt (ROS 2 driver)
 
-The driver runs B-Adapt on Basler GigE cameras and starts acquiring as soon as it finds them: **stereo with two cameras, mono with one**. A live Rerun view opens by default (`viewer:=none` to disable it). Both installations need the [Pylon 12 SDK](https://www.baslerweb.com/en/downloads/software/), which cannot be redistributed.
+The driver runs B-Adapt (n = 3 brackets) on Basler GigE cameras and starts acquiring as soon as it finds them: **stereo with two cameras, mono with one**. A live Rerun view opens by default (`viewer:=none` to disable it). Both installations need the [Pylon 12 SDK](https://www.baslerweb.com/en/downloads/software/), which cannot be redistributed.
 
 **Native (Ubuntu 24.04, ROS 2 Jazzy).**
 

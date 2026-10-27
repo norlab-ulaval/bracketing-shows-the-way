@@ -5,8 +5,9 @@
  * @file ExposureTrack.h
  *
  * Per-zone software auto-exposure/gain controller: a fixed-rate EMA with
- * strictly sequential exposure/gain priority (only one of the two moves in
- * a given frame). See DESIGN.md.
+ * exposure/gain priority (more light: exposure first, gain only for what the
+ * exposure limit cannot supply; less light: gain released first with exposure
+ * frozen). See DESIGN.md.
  *
  * Every frame:
  *   measured' = pixelMax * (1 + saturationBoostFraction)   if B >= pixelMax

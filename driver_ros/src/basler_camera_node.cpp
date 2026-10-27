@@ -93,25 +93,25 @@ private:
 
         // B-Adapt. See DriverConfig (Config.h) and README.md.
         declare_parameter("ae_zone_count", 3);  // must be 3
-        declare_parameter("zone_sort_stride", 8);
-        declare_parameter("ae_bridge_low_percentile",  99.9);
+        declare_parameter("zone_sort_stride", 1);
+        declare_parameter("ae_bridge_low_percentile",  99.0);
         declare_parameter("ae_bridge_low_target",      250.0);
-        declare_parameter("ae_bridge_high_percentile", 0.1);
+        declare_parameter("ae_bridge_high_percentile", 1.0);
         declare_parameter("ae_bridge_high_target",     5.0);
         declare_parameter("ae_bridge_min_stops_gap",   1.0);
 
         // Controller tuning.
         declare_parameter("pixel_max",                255.0);
-        declare_parameter("ae_zone_alpha", std::vector<double>{0.4, 0.4, 0.4});  // EMA rate: low, mid (unused), high
-        declare_parameter("epsilon",                  0.05);
+        declare_parameter("ae_zone_alpha", std::vector<double>{0.8, 0.4, 0.8});  // EMA rate: low, mid (unused), high
+        declare_parameter("epsilon",                  0.02);
         declare_parameter("default_exposure_us",      10000.0);
         declare_parameter("ae_saturation_boost_fraction", 0.5);
         declare_parameter("exposure_tie_tolerance_us", 5.0);
 
-        declare_parameter("min_exposure_us", 100.0);
-        declare_parameter("max_exposure_us", 15000.0);
+        declare_parameter("min_exposure_us", 19.0);
+        declare_parameter("max_exposure_us", 5000.0);
         declare_parameter("min_gain_db",     0.0);
-        declare_parameter("max_gain_db",     12.0);
+        declare_parameter("max_gain_db",     48.0);
 
         // GigE transport, per camera.
         declare_parameter("camera_1_heartbeat_timeout_ms", 5000);
@@ -128,7 +128,7 @@ private:
         declare_parameter("camera_2_frame_retention_ms", -1);
 
         // Host-side trigger pacing (Hz), 0 = as fast as possible.
-        declare_parameter("acquisition_frame_rate", 0.0);
+        declare_parameter("acquisition_frame_rate", 20.0);
 
         declare_parameter("ae_once_max_iters",  100);
         declare_parameter("ae_once_timeout_ms", 5000);

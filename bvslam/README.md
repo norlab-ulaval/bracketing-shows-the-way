@@ -2,7 +2,7 @@
 
 Stereo visual SLAM on bracketed multi-exposure image sequences, as evaluated in
 *Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust
-Visual SLAM* (ICRA 2027).
+Visual SLAM* ([arXiv:2610.33174](https://arxiv.org/abs/2610.33174)).
 
 ## Pipeline
 

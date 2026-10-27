@@ -52,7 +52,7 @@ void ExposureTrack::update(double brightness, double minExp, double maxExp,
         gainDb_ = gainDb_ * (1.0 - alpha_) + targetGainDb * alpha_;
     } else {
         // Need LESS light: release gain to the floor first, with exposure
-        // frozen, so only one of the two moves per frame.
+        // frozen.
         if (gainDb_ > minGain + kGainFloorToleranceDb) {
             const double targetGainDb = std::clamp(
                 gainDb_ + 20.0 * std::log10(ratio), minGain, maxGain);

@@ -29,9 +29,9 @@ Mapping to the paper's symbols (Table I):
 | Frame rate | 20 Hz (4 Hz in the tunnel) | `acquisition_frame_rate` |
 
 Other settings: `epsilon: 0.02`, `ae_saturation_boost_fraction: 0.5`,
-`zone_sort_stride: 1`. The node's built-in parameter defaults are generic
-and differ from the rig values, so always start from `config/b_adapt.yaml`
-(the launch file's default). Set `verbose: true` for a per-frame AE log on
+`zone_sort_stride: 1`. The node's built-in parameter defaults are the same
+values, so a parameter file that leaves a key out still gets the paper
+setting. Only n = 3 brackets are supported. Set `verbose: true` for a per-frame AE log on
 stdout.
 
 ## Published topics

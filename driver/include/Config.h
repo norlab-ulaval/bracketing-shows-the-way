@@ -23,11 +23,11 @@ struct DriverConfig {
 
     /// Sampling stride in 2x2 Bayer blocks (x and y) for brightness
     /// measurement. 1 = every block.
-    int zoneSortStride = 8;
+    int zoneSortStride = 1;
 
-    double aeBridgeLowPercentile  = 99.9;   ///< Low zone's own tail percentile, in (0, 100) (100 - alpha).
+    double aeBridgeLowPercentile  = 99.0;   ///< Low zone's own tail percentile, in (0, 100) (100 - alpha).
     double aeBridgeLowTarget      = 250.0;  ///< Target value for that percentile, in [0, pixelMax] (255 - beta).
-    double aeBridgeHighPercentile = 0.1;    ///< High zone's own tail percentile, in (0, 100) (alpha).
+    double aeBridgeHighPercentile = 1.0;    ///< High zone's own tail percentile, in (0, 100) (alpha).
     double aeBridgeHighTarget     = 5.0;    ///< Target value for that percentile, in [0, pixelMax] (beta).
     double aeBridgeMinStopsGap    = 1.0;    ///< Floor on low/high separation in stops (Delta_min), >= 0.
 
@@ -37,9 +37,9 @@ struct DriverConfig {
     /// Per-zone EMA rate (lambda) in (0, 1], exactly aeZoneCount entries
     /// (low, mid, high; mid is derived and its entry is unused):
     /// new = (1 - lambda) * old + lambda * proposal.
-    std::vector<double> aeZoneAlpha{0.4, 0.4, 0.4};
+    std::vector<double> aeZoneAlpha{0.8, 0.4, 0.8};
 
-    double epsilon           = 0.05;      ///< Convergence threshold (fractional brightness error).
+    double epsilon           = 0.02;      ///< Convergence threshold (fractional brightness error).
     double defaultExposureUs = 10'000.0;  ///< Exposure before the AE-Once seed.
 
     /// A clipped reading (>= pixelMax) is treated as pixelMax * (1 + this)
@@ -49,10 +49,10 @@ struct DriverConfig {
     /// µs tolerance for ZoneManager::closestZone() ties.
     double exposureTieToleranceUs = 5.0;
 
-    double minExposureUs = 100.0;
-    double maxExposureUs = 15'000.0;
+    double minExposureUs = 19.0;
+    double maxExposureUs = 5'000.0;
     double minGainDb = 0.0;
-    double maxGainDb = 12.0;
+    double maxGainDb = 48.0;
 
     // ── Camera / GigE (per camera) ──────────────────────────────────────────
     int camera1HeartbeatTimeoutMs = 5000;
@@ -70,7 +70,7 @@ struct DriverConfig {
 
     /// Host-side trigger pacing (Hz) of the lockstep capture loop. 0 = as
     /// fast as the hardware allows.
-    double acquisitionFrameRate = 0.0;
+    double acquisitionFrameRate = 20.0;
 
     // ── AE-Once bootstrap ───────────────────────────────────────────────────
     int aeOnceMaxIters  = 100;

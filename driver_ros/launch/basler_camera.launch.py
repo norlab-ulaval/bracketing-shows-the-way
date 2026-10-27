@@ -13,7 +13,7 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, Shutdown
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
@@ -82,4 +82,6 @@ def _launch_node(context, *args, **kwargs):
         emulate_tty=True,
         respawn=respawn,
         respawn_delay=2.0,
+        # Without respawn, stop the whole launch (viewer included) when the camera node exits.
+        on_exit=None if respawn else Shutdown(reason="camera node exited"),
     )]

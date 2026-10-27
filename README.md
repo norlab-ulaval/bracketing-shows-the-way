@@ -2,7 +2,7 @@
 
 # Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM
 
-[![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX)
+[![arXiv](https://img.shields.io/badge/arXiv-2610.33174-b31b1b.svg)](https://arxiv.org/abs/2610.33174)
 [![Video](https://img.shields.io/badge/Video-YouTube-red.svg)](https://youtu.be/LZGkNU1_s2g)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -183,13 +183,16 @@ We build on [GTSAM](https://github.com/borglab/gtsam), [LightGlue](https://githu
 
 ## Citation
 
-If you use this code or data, please cite our paper. This is a placeholder entry; it will be updated with the arXiv identifier and the final publication details.
+If you use this code or data, please cite our paper:
 
 ```bibtex
-@article{gamache2026bracketing,
-  title   = {Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual {SLAM}},
-  author  = {Gamache, Olivier and Lavertu, Anthony and Duclos, David-Alexandre and Fortin, Jean-Michel and Pomerleau, Fran{\c{c}}ois and Gigu{\`e}re, Philippe},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
-  year    = {2026}
+@misc{gamache2026bracketing,
+  title         = {Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual {SLAM}},
+  author        = {Gamache, Olivier and Lavertu, Anthony and Duclos, David-Alexandre and Fortin, Jean-Michel and Pomerleau, Fran{\c{c}}ois and Gigu{\`e}re, Philippe},
+  year          = {2026},
+  eprint        = {2610.33174},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2610.33174}
 }
 ```

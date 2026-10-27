@@ -13,8 +13,11 @@ authors:
 preferred-citation:
   type: article
   title: "Bracketing Shows the Way: Adaptive Multi-Exposure Policy as Input for Robust Visual SLAM"
-  journal: "arXiv preprint"
+  journal: "arXiv preprint arXiv:2610.33174"
   year: 2026
+  url: "https://arxiv.org/abs/2610.33174"
+  identifiers:
+    - {type: other, value: "arXiv:2610.33174", description: "arXiv identifier"}
   authors:
     - {family-names: Gamache, given-names: Olivier}
     - {family-names: Lavertu, given-names: Anthony}
